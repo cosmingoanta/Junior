@@ -1,22 +1,22 @@
 
-public class MyDoubleLinkedList<E> {
-
-	public class DoubleLinkedListNode<E> {
+public class MyQueueUsingCircularList<E> {
+	
+	public class MyQueueUsingCircularListNode<E> {
 		private E value;
-		private DoubleLinkedListNode<E> next;
-		private DoubleLinkedListNode<E> previous;
+		private MyQueueUsingCircularListNode<E> next;
+		private MyQueueUsingCircularListNode<E> previous;
 
-		public DoubleLinkedListNode(E value, DoubleLinkedListNode<E> next, DoubleLinkedListNode<E> previous) {
+		public MyQueueUsingCircularListNode(E value, MyQueueUsingCircularListNode<E> next, MyQueueUsingCircularListNode<E> previous) {
 			this.value = value;
 			this.next = next;
 			this.previous = previous;
 		}
 
-		public DoubleLinkedListNode(E value) {
+		public MyQueueUsingCircularListNode(E value) {
 			this(value, null, null);
 		}
 
-		public DoubleLinkedListNode() {
+		public MyQueueUsingCircularListNode() {
 		}
 
 		public void value(E value) {
@@ -27,40 +27,40 @@ public class MyDoubleLinkedList<E> {
 			return value;
 		}
 
-		public DoubleLinkedListNode<E> next() {
+		public MyQueueUsingCircularListNode<E> next() {
 			return next;
 		}
 
-		public void next(DoubleLinkedListNode<E> next) {
+		public void next(MyQueueUsingCircularListNode<E> next) {
 			this.next = next;
 		}
 
-		public DoubleLinkedListNode<E> prev() {
+		public MyQueueUsingCircularListNode<E> prev() {
 			return previous;
 		}
 
-		public void prev(DoubleLinkedListNode<E> previous) {
+		public void prev(MyQueueUsingCircularListNode<E> previous) {
 			this.previous = previous;
 		}
 	}
 
-	private DoubleLinkedListNode<E> head = null;
-	private DoubleLinkedListNode<E> tail = null;
+	private MyQueueUsingCircularListNode<E> head = null;
+	private MyQueueUsingCircularListNode<E> tail = null;
 	private int size = 0;
-
+	
 	public int getSize() {
 		return size;
 	}
 
-	MyDoubleLinkedList() {
+	MyQueueUsingCircularList() {
 		head = null;
 		tail = null;
 		size = 0;
 	}
 
-	MyDoubleLinkedList(MyDoubleLinkedList<E> list) {
-		DoubleLinkedListNode<E> copyHead = list.head;
-		while (copyHead != null) {
+	MyQueueUsingCircularList(MyQueueUsingCircularList<E> list) {
+		MyQueueUsingCircularListNode<E> copyHead = list.head;
+		while (copyHead.next != head) {
 			add(copyHead.value());
 			copyHead = copyHead.next();
 			this.size++;
@@ -68,7 +68,7 @@ public class MyDoubleLinkedList<E> {
 	}
 
 	public boolean add(E e) {
-		DoubleLinkedListNode<E> node = new DoubleLinkedListNode<E>(e);
+		MyQueueUsingCircularListNode<E> node = new MyQueueUsingCircularListNode<E>(e);
 		if (head == null) {
 			head = node;
 			tail = head;
@@ -77,13 +77,15 @@ public class MyDoubleLinkedList<E> {
 			node.prev(tail);
 			tail = tail.next();
 		}
+		tail.next(head);
+		head.prev(tail);
 		this.size++;
 		return true;
 	}
 
 	public void add(int index, E e) {
-		DoubleLinkedListNode<E> copyHead = this.head;
-		DoubleLinkedListNode<E> node = new DoubleLinkedListNode<E>(e);
+		MyQueueUsingCircularListNode<E> copyHead = this.head;
+		MyQueueUsingCircularListNode<E> node = new MyQueueUsingCircularListNode<E>(e);
 		int counter = 0;
 		if (index >= this.size) {
 			tail.next(node);
@@ -94,7 +96,7 @@ public class MyDoubleLinkedList<E> {
 			node.next(head);
 			head = head.prev();
 		} else {
-			while (copyHead != null) {
+			do {
 				if (counter + 1 == index) {
 					node.next(copyHead.next());
 					node.prev(copyHead.prev());
@@ -104,53 +106,59 @@ public class MyDoubleLinkedList<E> {
 				counter++;
 				copyHead = copyHead.next();
 			}
+			while (copyHead != head);
 		}
+		
 		this.size++;
+		tail.next(head);
+		head.prev(tail);
 	}
 
 	public void set(int index, E e) {
-		DoubleLinkedListNode<E> copyHead = this.head;
+		MyQueueUsingCircularListNode<E> copyHead = this.head;
 		int counter = 0;
 		if (index >= this.size) {
 			System.out.println("Error");
 		} else if (index == 0) {
 			copyHead.value(e);
 		} else {
-			while (copyHead != null) {
-				if (counter + 1 == index) {
+			do {
+				if (counter == index) {
 					copyHead.value(e);
 				}
 				counter++;
 				copyHead = copyHead.next();
 			}
+			while (copyHead != head);
+				
 		}
 	}
 	
 	public int indexOf(E e) {
-		DoubleLinkedListNode<E> copyHead = this.head;
+		MyQueueUsingCircularListNode<E> copyHead = this.head;
 		int counter = 0;
-		while (copyHead != null) {
-
+		do {
 			if (copyHead.value() == e) {
 				return counter;
 			}
 			counter++;
 			copyHead = copyHead.next();
 		}
+		while (copyHead != head);
 		return -1;
 	}
 
 	public E get(int index) {
-		DoubleLinkedListNode<E> copyHead = this.head;
+		MyQueueUsingCircularListNode<E> copyHead = this.head;
 		int counter = 0;
-		while (copyHead != null) {
-
+		do {
 			if (counter == index) {
 				return copyHead.value;
 			}
 			counter++;
 			copyHead = copyHead.next();
 		}
+		while (copyHead != head);
 		return null;
 	}
 
@@ -162,32 +170,33 @@ public class MyDoubleLinkedList<E> {
 	}
 
 	public int lastIndexOf(E e) {
-		DoubleLinkedListNode<E> copyHead = this.head;
+		MyQueueUsingCircularListNode<E> copyHead = this.head;
 		int result = -1;
 		int counter = 0;
-		while (copyHead != null) {
-
+		do {
 			if (copyHead.value() == e) {
 				result = counter;
 			}
 			copyHead = copyHead.next();
 			counter++;
 		}
+		while (copyHead != head);
 		return result;
 	}
 
 	public boolean remove(E e) {
-		DoubleLinkedListNode<E> copyHead = this.head;
-		while (copyHead != null) {
+		MyQueueUsingCircularListNode<E> copyHead = this.head;
+		do {
 			if (copyHead.value() == e) {
-				if (copyHead.prev() == null) {
+				if (copyHead.prev() == tail) {
 					copyHead.value(copyHead.next().value());
-					copyHead.next().prev(null);
+					copyHead.next().prev(tail);
 					copyHead.next(copyHead.next().next());
 					head = copyHead;
-				} else if(copyHead.next() == null){
-					copyHead.prev().next(null);
+				} else if(copyHead.next() == head){
+					copyHead.prev().next(head);
 					tail = copyHead.prev();
+					head.prev(tail);
 				} else {
 					copyHead.value(copyHead.next().value());
 					copyHead.next().prev(copyHead.prev());
@@ -195,8 +204,9 @@ public class MyDoubleLinkedList<E> {
 				}
 			}
 			copyHead = copyHead.next();
-		}
+		} while (copyHead != head);
 		this.size--;
+		System.out.println(head.value() + " " + head.prev().value()+ " " + tail.value() + tail.next().value());
 		return true;
 	}
 
@@ -205,17 +215,18 @@ public class MyDoubleLinkedList<E> {
 		this.tail = null;
 	}
 	
-	public boolean addAll(MyDoubleLinkedList<E> list) {
+	public boolean addAll(MyQueueUsingCircularList<E> list) {
 		this.tail.next(list.head);
 		list.head.prev(this.head);
 		this.tail = list.tail;
 		this.size = this.size + list.getSize();
+		tail.next(head);
+		head.prev(tail);
 		return true;
 	}
 	
-	public boolean addAll(int index, MyDoubleLinkedList<E> list) {
-		DoubleLinkedListNode<E> copyHead = this.head;
-
+	public boolean addAll(int index, MyQueueUsingCircularList<E> list) {
+		MyQueueUsingCircularListNode<E> copyHead = this.head;
 		int counter = 0;
 		if (index >= this.size) {
 			tail.next(list.head);
@@ -226,7 +237,7 @@ public class MyDoubleLinkedList<E> {
 			list.tail.next(head);
 			head = list.head;
 		} else {
-			while (copyHead != null) {
+			do {
 				if (counter + 1 == index) {
 					list.tail.next(copyHead.next());
 					list.head.prev(copyHead.prev());
@@ -236,24 +247,26 @@ public class MyDoubleLinkedList<E> {
 				counter++;
 				copyHead = copyHead.next();
 			}
+			while (copyHead != head);
 		}
 		this.size = this.size + list.size;
+		tail.next(head);
+		head.prev(tail);
 		return true;
 	}
 	
 	public E peek() {
-		return tail.value();
+		return head.value();
 	}
 	
-	public void push(E e) {
+	public boolean enqueue(E e) {
 		this.add(e);
+		return true;
 	}
 	
-	public E pop() {
-		E aux = tail.value();
-		tail = tail.prev();
-		tail.next(null);
-		this.size--;
+	public E dequeue() {
+		E aux = head.value();
+		this.remove(head.value());
 		return aux;
 	}
 	
@@ -263,5 +276,16 @@ public class MyDoubleLinkedList<E> {
 		}
 		return true;
 	}
-
+	
+	public void prin() {
+		System.out.println("--------");
+		MyQueueUsingCircularListNode<E> copyHead = this.head;
+		do {
+			System.out.print(copyHead.value() + " ");
+			copyHead = copyHead.next()	;
+		}
+		while (copyHead != head);
+		System.out.println("head is " + this.head.value() + " tail is " + this.tail.value());
+		System.out.println("============");
+	}
 }
