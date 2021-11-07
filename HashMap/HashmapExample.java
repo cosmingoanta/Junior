@@ -1,13 +1,20 @@
 
+import java.io.BufferedOutputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.HashMap;
+import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
-public class HashmapExample {
+public class HashmapExample{
 
 	private static Scanner sc = new Scanner(System.in);
-	private HashMap<String, String> rentedCars = new HashMap<String, String>(100, 0.5f);
-	private HashMap<String, RentedCars> owners = new HashMap<String, RentedCars>(100, 0.5f);
-
+	private static HashMap<String, String> rentedCars = new HashMap<String, String>(100, 0.5f);
+	private static HashMap<String, RentedCars> owners = new HashMap<String, RentedCars>(100, 0.5f);
+	private static final long serialVersionUID = 1L;
+	
 	private static String getPlateNo() {
 		System.out.println("Introduceti numarul de inmatriculare:");
 		return sc.nextLine();
@@ -23,26 +30,25 @@ public class HashmapExample {
 		return rentedCars.containsKey(plateNo);
 	}
 
-	// get the value associated to a key
+	// get the value associated to a key + exception homework
 	private String getCarRent(String plateNo) {
-		if(rentedCars.get(plateNo) != null) {
-			return rentedCars.get(plateNo);
-		} else {
-			System.out.println("Masina nu exista in sistem.");
-			return null;
+		if (rentedCars.get(plateNo) == null) {
+			throw new NoSuchElementException("Masina nu exista.");
 		}
+		return rentedCars.get(plateNo);
 	}
 
 	// add a new (key, value) pair
 	private void rentCar(String plateNo, String ownerName) {
 		String aux = rentedCars.put(plateNo, ownerName);
-		if(aux == null) {
+		if (aux == null) {
 			System.out.println("Masina a fost adaugata.");
 		} else {
-			System.out.println("Masina cu numarul de inmatriculare: " + plateNo + " este acum a noului proprietar: "+ getCarRent(plateNo));
+			System.out.println("Masina cu numarul de inmatriculare: " + plateNo + " este acum a noului proprietar: "
+					+ getCarRent(plateNo));
 		}
 		if (owners.containsKey(ownerName)) {
-			if(aux == null) {
+			if (aux == null) {
 				owners.get(ownerName).addCar(plateNo);
 			} else {
 				owners.get(ownerName).addCar(plateNo);
@@ -51,7 +57,7 @@ public class HashmapExample {
 		} else {
 			RentedCars cars = new RentedCars();
 			cars.addCar(plateNo);
-			if(aux == null) {
+			if (aux == null) {
 				owners.put(ownerName, cars);
 			} else {
 				owners.get(aux).removeCar(plateNo);
@@ -60,17 +66,17 @@ public class HashmapExample {
 		}
 	}
 
-	// remove an existing (key, value) pair
+	// remove an existing (key, value) pair + exception hw
 	private void returnCar(String plateNo) {
 		String aux = rentedCars.remove(plateNo);
-		if(aux == null) {
-			System.out.println("Masina nu a fost gasita.");
-		} else {
-			System.out.println("Masina a fost stearsa cu succes.");
-			owners.get(aux).removeCar(plateNo);
+		if (aux == null) {
+			throw new NoSuchElementException("Masina nu exista.");
 		}
+		System.out.println("Masina a fost stearsa cu succes.");
+		owners.get(aux).removeCar(plateNo);
+
 	}
-	
+
 	// get number of cars which are rented
 	private void returnSize() {
 		System.out.println("The total number of rented cars is: " + this.rentedCars.size());
@@ -120,11 +126,27 @@ public class HashmapExample {
 			}
 		}
 	}
+	
+	public static void writeToBinaryMainCars(HashMap<String, String> cars) throws IOException {
+		try (ObjectOutputStream binaryFileOut = new ObjectOutputStream(
+				new BufferedOutputStream(new FileOutputStream("mainCars.dat")))) {
+			binaryFileOut.writeObject(cars);
+		}
+	}
+	
+	public static void writeToBinaryOwners(HashMap<String, RentedCars> cars) throws IOException {
+		try (ObjectOutputStream binaryFileOut = new ObjectOutputStream(
+				new BufferedOutputStream(new FileOutputStream("owners.dat")))) {
+			binaryFileOut.writeObject(cars);
+		}
+	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 
 		// create and run an instance (for test purpose)
 		new HashmapExample().run();
+		writeToBinaryMainCars(rentedCars);
+		writeToBinaryOwners(owners);
 
 	}
 }
