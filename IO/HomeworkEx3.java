@@ -1,6 +1,5 @@
-import java.io.BufferedReader;
+
 import java.io.BufferedWriter;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -10,14 +9,24 @@ public class HomeworkEx3 {
 
 	public static void main(String[] args) throws IOException {
 
-		ArrayList<String> arr = new ArrayList<>();
+		/*
 		try (Scanner scanner = new Scanner(new BufferedReader(new FileReader("TextInputEx3.txt")))) {
 			while (scanner.hasNextLine()) {
 				String nextLine = scanner.nextLine();
 				arr.add(nextLine);
 			}
 		}
-
+		*/
+		
+		ArrayList<String> arr = new ArrayList<>();
+		Scanner sc = new Scanner(System.in);
+		System.out.println("Introduceti cuvinte separate prin linie noua. tastati quit pentru a finaliza.");
+		String next = sc.nextLine();
+		while(!next.equals("quit")) {
+			arr.add(next);
+			next = sc.nextLine();
+		}
+	
 		String shortestWord = arr.get(0);
 		String longestWord = arr.get(0);
 		String bestWord = arr.get(0);
@@ -50,6 +59,9 @@ public class HomeworkEx3 {
 			outputFile.append("Number of words is: " + arr.size());
 			outputFile.newLine();
 		}
+		
+		System.out.println("fin");
+		sc.close();
 	}
 
 }

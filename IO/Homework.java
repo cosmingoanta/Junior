@@ -17,6 +17,7 @@ public class Homework {
 		System.out.println("Introdu al doilea cuvant: ");
 		String cuv2 = sc.next();
 		ArrayList<String> text = new ArrayList<String>();
+		
 		try (Scanner scanner = new Scanner(new BufferedReader(new FileReader("TextInput.txt")))) {
 			while (scanner.hasNextLine()) {
 				String nextLine = scanner.nextLine();
@@ -26,11 +27,8 @@ public class Homework {
 
 		for (int i = 0; i < text.size(); i++) {
 			String aux = text.get(i);
-			while (aux.contains(cuv1)) {
-				String aux2 = aux.replace(cuv1, cuv2);
-				aux = aux2;
-			}
-			text.set(i, aux);
+			String aux2 = aux.replaceAll(cuv1, cuv2);
+			text.set(i, aux2);
 		}
 
 		try (BufferedWriter outputFile = new BufferedWriter(new FileWriter("TextOutput.txt"))) {
@@ -41,17 +39,17 @@ public class Homework {
 		}
 
 		// ex2
-
 		try (Scanner scanner = new Scanner(new BufferedReader(new FileReader("TextInput.txt")))) {
 			try (BufferedWriter outputFile = new BufferedWriter(new FileWriter("TextOutput2.txt"))){
 			while (scanner.hasNextLine()) {
 				String nextLine = scanner.nextLine();
-				String newLine = nextLine.replace(cuv1, cuv2);
+				String newLine = nextLine.replaceAll(cuv1, cuv2);
 				outputFile.append(newLine);
 				outputFile.newLine();
 				}
 			}
+		
 		}
+		sc.close();
 	}
-
 }
